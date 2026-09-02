@@ -19,5 +19,8 @@ func main() {
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID,
 	}
+
+	// ps cant see new process if its in the older process
+	// but with a new mount space it can see the new ps
 	cmd.Run()
 }
