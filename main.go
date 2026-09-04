@@ -119,3 +119,15 @@ package main
 // 		panic(err)
 // 	}
 // }
+
+// func main() {
+// 	// cmd := exec.Command("ls", "-al")
+
+// 	// cmd.Stdin = os.Stdin
+// 	// cmd.Stdout = os.Stdout
+// 	// cmd.Stderr = os.Stderr
+
+// 	// argSlice := cmd.Args
+// 	argSlice := os.Args
+// 	fmt.Println(argSlice)
+// }
