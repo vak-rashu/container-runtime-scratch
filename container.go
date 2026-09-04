@@ -13,26 +13,27 @@ func createRoot(path string) {
 	cmd.Stdout = os.Stdout
 
 	// rootfs
-	syscall.Mount("/root/bundle/rootfs",
-		"/root/bundle/rootfs",
-		"",
-		syscall.MS_BIND|syscall.MS_REC,
-		"")
+	// syscall.Mount("/home/rashu/bundle/rootfs",
+	// 	"/home/rashu/bundle/rootfs",
+	// 	"",
+	// 	syscall.MS_BIND|syscall.MS_REC,
+	// 	"")
 
 	// pivot root
-	syscall.PivotRoot("/root/bundle/rootfs", "./oldroot")
+	// syscall.PivotRoot("/home/rashu/bundle/rootfs", "./oldroot")
+	syscall.Chroot("/home/rashu/bundle/rootfs")
 	// syscall.Chroot("/home/rashu/bundle/rootfs")
 	os.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
 	panic(cmd.Run())
 }
 
-func root() {
+func run() {
 	// reexec pattern
 	// cmd := exec.Command("/proc/self/exe", append([]string{"child"}, "/bin/bash")...)
 
 	// takes the process
-	cmd := exec.Command("/proc/self/exec", append([]string{"createRoot"}, "/bin/bash")...)
+	cmd := exec.Command("/proc/self/exe", append([]string{"createRoot"}, "/bin/sh")...)
 
 	// gets connected to the given file
 
@@ -59,9 +60,10 @@ func root() {
 func main() {
 
 	switch os.Args[1] {
-	case "root":
-		root()
+	case "run":
+		run()
 	case "createRoot":
+		// fmt.Println("whatt")
 		createRoot(os.Args[2])
 	}
 }
