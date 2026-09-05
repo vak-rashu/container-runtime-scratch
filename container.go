@@ -7,11 +7,6 @@ import (
 )
 
 func createRoot(path string) {
-	cmd := exec.Command(path)
-	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-
 	// rootfs
 	// syscall.Mount("/home/rashu/bundle/rootfs",
 	// 	"/home/rashu/bundle/rootfs",
@@ -19,19 +14,23 @@ func createRoot(path string) {
 	// 	syscall.MS_BIND|syscall.MS_REC,
 	// 	"")
 
-	// pivot root
-	// syscall.PivotRoot("/home/rashu/bundle/rootfs", "./oldroot")
+	// // pivot root
+	// panic(syscall.PivotRoot("/home/rashu/bundle/rootfs", "oldroot"))
 	syscall.Chroot("/home/rashu/bundle/rootfs")
-	// syscall.Chroot("/home/rashu/bundle/rootfs")
 	os.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
+
+	cmd := exec.Command(path)
+
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+
 	panic(cmd.Run())
 }
 
 func run() {
 	// reexec pattern
-	// cmd := exec.Command("/proc/self/exe", append([]string{"child"}, "/bin/bash")...)
-
 	// takes the process
 	cmd := exec.Command("/proc/self/exe", append([]string{"createRoot"}, "/bin/sh")...)
 
@@ -47,7 +46,14 @@ func run() {
 
 	// defines attr for the cmd defined
 	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWNS,
+		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWUSER | syscall.CLONE_NEWNS,
+		UidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID:      1000,
+				Size:        1,
+			},
+		},
 	}
 
 	// child()
