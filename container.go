@@ -14,8 +14,8 @@ func createRoot(path string) {
 	// 	syscall.MS_BIND|syscall.MS_REC,
 	// 	"")
 
-	// // pivot root
-	// panic(syscall.PivotRoot("/home/rashu/bundle/rootfs", "oldroot"))
+	// pivot root
+	// (unix.PivotRoot("/home/rashu/bundle/rootfs", "oldroot"))
 	syscall.Chroot("/home/rashu/bundle/rootfs")
 	os.Chdir("/")
 	syscall.Mount("proc", "proc", "proc", 0, "")
@@ -48,6 +48,13 @@ func run() {
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Cloneflags: syscall.CLONE_NEWUTS | syscall.CLONE_NEWPID | syscall.CLONE_NEWUSER | syscall.CLONE_NEWNS,
 		UidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID:      1000,
+				Size:        1,
+			},
+		},
+		GidMappings: []syscall.SysProcIDMap{
 			{
 				ContainerID: 0,
 				HostID:      1000,
