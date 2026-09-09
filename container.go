@@ -57,7 +57,7 @@ func run() {
 		GidMappings: []syscall.SysProcIDMap{
 			{
 				ContainerID: 0,
-				HostID:      1000,
+				HostID:      1000, // Assuming your host GID is also 1000
 				Size:        1,
 			},
 		},
